@@ -1,12 +1,29 @@
 import React, { Component } from 'react';
+import QuestionStatus from './QuestionStatus.js';
 import VariantsQuestion from '../Questions/VariantsQuestion/VariantsQuestion.js';
 import InputQuestion from '../Questions/InputQuestion/InputQuestion.js';
 
 class QuestionView extends Component {
   constructor(props) {
     super(props);
+    this.state = { state: 'ask', value: '' }
+
+    this.handleCheck = this.handleCheck.bind(this);
+    this.handleValueUpdate = this.handleValueUpdate.bind(this);
   }
-  render() {
+
+  handleCheck() {
+    if (typeof this.props.checkResult !== 'function') {
+      throw new Error('Property checkResult is required and must be a function.');
+    }
+    this.props.checkResult(this.state.value);
+  }
+
+  handleValueUpdate(value) {
+    this.setState({ value: value });
+  }
+
+  renderQuestion() {
     if (!this.props || !this.props.questionVm) {
       return (
         <div className="QuestionView-Error">Property questionVm is not set.</div>
@@ -19,14 +36,22 @@ class QuestionView extends Component {
     }
 
     if (this.props.questionVm.type == 'variants') {
-      return (<VariantsQuestion questionVm={ this.props.questionVm } stateName={this.props.stateName} result={this.props.result} checkResult={this.props.checkResult}  />);
+      return (<VariantsQuestion questionVm={this.props.questionVm} handleValueUpdate={this.handleValueUpdate} value={this.state.value} />);
     }
     if (this.props.questionVm.type == 'input') {
-      return (<InputQuestion questionVm={ this.props.questionVm } stateName={this.props.stateName} result={this.props.result} checkResult={this.props.checkResult}  />);
+      return (<InputQuestion questionVm={this.props.questionVm} handleValueUpdate={this.handleValueUpdate} value={this.state.value} />);
     }
-    
+
     return (
       <div className="QuestionView-Error">Unfortunately {this.props.questionVm.type} question type is not supported yet :(.</div>
+    );
+  }
+
+  render() {
+    return (
+        <QuestionStatus handleCheck={this.handleCheck} stateName={this.props.stateName} result={this.props.result}>
+          {this.renderQuestion()}
+        </QuestionStatus>
     );
   }
 }
