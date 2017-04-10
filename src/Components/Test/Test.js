@@ -8,12 +8,21 @@ class Test extends Component {
 
     var questionVm = questionService.getRandom();
     this.state = {
-      questionVm
+      questionVm,
+      stateName: 'ask',
+      result: null
     };
+
+    this.checkResult = this.checkResult.bind(this);
   }
+
+  checkResult(answer) {
+    this.setState({ result: this.state.questionVm.test(answer), stateName: 'result' });
+  }
+
   render() {
     return (
-      <QuestionView questionVm = { this.state.questionVm } />
+      <QuestionView questionVm={this.state.questionVm} stateName={this.state.stateName} result={this.state.result} checkResult={this.checkResult} />
     );
   }
 }

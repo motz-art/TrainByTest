@@ -19,10 +19,10 @@ class QuestionView extends Component {
     }
 
     if (this.props.questionVm.type == 'variants') {
-      return (<VariantsQuestion questionVm={ this.props.questionVm } />);
+      return (<VariantsQuestion questionVm={ this.props.questionVm } stateName={this.props.stateName} result={this.props.result} checkResult={this.props.checkResult}  />);
     }
     if (this.props.questionVm.type == 'input') {
-      return (<InputQuestion questionVm={ this.props.questionVm } />);
+      return (<InputQuestion questionVm={ this.props.questionVm } stateName={this.props.stateName} result={this.props.result} checkResult={this.props.checkResult}  />);
     }
     
     return (
