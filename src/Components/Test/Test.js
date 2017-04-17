@@ -6,23 +6,48 @@ class Test extends Component {
   constructor(props) {
     super(props);
 
-    var questionVm = questionService.getRandom();
-    this.state = {
-      questionVm,
-      stateName: 'ask',
-      result: null
-    };
+    this.state = this.selectNextQuestion();
 
     this.checkResult = this.checkResult.bind(this);
+    this.nextQuestion = this.nextQuestion.bind(this);
+    this.selectNextQuestion = this.selectNextQuestion.bind(this);
+    this.handleValueUpdate = this.handleValueUpdate.bind(this);
   }
 
-  checkResult(answer) {
-    this.setState({ result: this.state.questionVm.test(answer), stateName: 'result' });
+  selectNextQuestion() {
+    var questionVm = questionService.getRandom();
+    return {
+      questionVm,
+      stateName: 'ask',
+      result: null,
+      value: ''
+    };
+  }
+
+  handleValueUpdate(value) {
+    this.setState({ value: value });
+  }
+
+  checkResult() {
+    this.setState((prev) => ({ 
+      result: this.state.questionVm.test(prev.value), 
+      stateName: 'result' }));
+  }
+
+  nextQuestion() {
+    this.setState(this.selectNextQuestion);
   }
 
   render() {
     return (
-      <QuestionView questionVm={this.state.questionVm} stateName={this.state.stateName} result={this.state.result} checkResult={this.checkResult} />
+      <QuestionView 
+        questionVm={this.state.questionVm} 
+        stateName={this.state.stateName} 
+        value={this.state.value} 
+        result={this.state.result} 
+        handleValueUpdate={this.handleValueUpdate} 
+        checkResult={this.checkResult} 
+        nextQuestion={this.nextQuestion}/>
     );
   }
 }

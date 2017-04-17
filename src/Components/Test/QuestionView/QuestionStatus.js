@@ -5,6 +5,7 @@ class QuestionStatus extends Component {
         super(props);
 
         this.handleCheck = this.handleCheck.bind(this);
+        this.nextQuestion = this.nextQuestion.bind(this);
     }
 
     handleCheck(event) {
@@ -13,6 +14,14 @@ class QuestionStatus extends Component {
             throw new Error('Property handleCheck is required and must be a function.');
         }
         this.props.handleCheck();
+    }
+
+    nextQuestion(event) {
+        event.preventDefault();
+        if (typeof this.props.nextQuestion !== 'function') {
+            throw new Error('Property nextQuestion is required and must be a function.');
+        }
+        this.props.nextQuestion();
     }
 
     resultMessage() {
@@ -27,7 +36,10 @@ class QuestionStatus extends Component {
                 {this.resultMessage()}
                 {this.props.children}
                 <div className="Question-Check">
-                    <button className="Question-CheckButton" onClick={this.handleCheck}>Check</button>
+                    <button className="Question-CheckButton" onClick={this.handleCheck} disabled={this.props.stateName === 'result'}>Check</button>
+                </div>
+                <div className="Question-Check">
+                    <button className="Question-CheckButton" onClick={this.nextQuestion} disabled={this.props.stateName !== 'result'}>Next</button>
                 </div>
             </div>
         );
